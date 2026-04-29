@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Your Surprise 🎁</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+/* Card */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 350px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Cat */
+.cat {
+    font-size: 60px;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Button */
+.reveal-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: #ff6b81;
+    color: white;
+    cursor: pointer;
+}
+
+/* Voucher box */
+.voucher {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 15px;
+    background: #f1f2f6;
+    display: none;
+}
+
+/* Code + PIN */
+.code, .pin {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.code {
+    color: #2ed573;
+}
+
+.pin {
+    color: #ff4757;
+}
+
+/* Copy button */
+.copy-btn {
+    margin-top: 12px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    background: #1e90ff;
+    color: white;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="cat">😸</div>
+    <h2>Yayyy! You Forgave Me 💖</h2>
+    <p>I got something for you...</p>
+
+    <button class="reveal-btn" onclick="revealVoucher()">Open Surprise 🎁</button>
+
+    <div class="voucher" id="voucherBox">
+        <p>Your Zepto Voucher:</p>
+
+        <div class="code" id="voucherCode">
+            CODE:60097501177789310        </div>
+
+        <div class="pin" id="voucherPin">
+            PIN: 277137
+        </div>
+
+        <button class="copy-btn" onclick="copyAll()">Copy Code + PIN 📋</button>
+    </div>
+</div>
+
+<script>
+function revealVoucher() {
+    document.getElementById("voucherBox").style.display = "block";
+}
+
+function copyAll() {
+    const code = document.getElementById("voucherCode").innerText;
+    const pin = document.getElementById("voucherPin").innerText;
+
+    const fullText = code + " | " + pin;
+
+    navigator.clipboard.writeText(fullText);
+    alert("Copied: " + fullText);
+}
+</script>
+
+</body>
+</html>
