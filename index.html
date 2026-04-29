@@ -3,113 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <title>I'm Sorry 🥺</title>
+
 <style>
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(135deg, #89f7fe, #fbc2eb);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
-        color: #333;
-    }
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #89f7fe, #fbc2eb);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: #333;
+    overflow: hidden;
+}
 
-    .card {
-        background: white;
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        width: 320px;
-    }
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 340px;
+    animation: fadeInCard 1.5s ease-in-out;
+}
 
-    h1 {
-        margin-bottom: 10px;
-    }
+@keyframes fadeInCard {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
 
-    .moods button {
-        margin: 5px;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: 0.2s;
-    }
+.moods button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.2s;
+}
 
-    .moods button:hover {
-        transform: scale(1.1);
-    }
+.moods button:hover {
+    transform: scale(1.1);
+}
 
-    .result {
-        margin-top: 20px;
-        font-weight: bold;
-        min-height: 40px;
-    }
+.moods button.active {
+    background: #74b9ff;
+    color: white;
+}
 
-    .sorry-btn {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background: #ff6b81;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-    }
+.result {
+    margin-top: 20px;
+    font-weight: bold;
+    min-height: 40px;
+    opacity: 0;
+    transition: opacity 1s;
+}
 
-    .sorry-btn:hover {
-        background: #ff4757;
-    }
+.sorry-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #ff6b81;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    animation: pulse 1.5s infinite;
+}
+
+.sorry-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    animation: none;
+}
+
+.accept-btn {
+    margin-top: 15px;
+    padding: 8px 15px;
+    background: #2ed573;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: none;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-120px); opacity: 0; }
+}
+
+.emoji {
+    position: absolute;
+    font-size: 30px;
+    animation: floatUp 2s forwards;
+}
+
+/* floating hearts */
+.heart {
+    position: absolute;
+    color: rgba(255, 105, 180, 0.6);
+    font-size: 20px;
+    animation: floatHeart 6s linear infinite;
+}
+
+@keyframes floatHeart {
+    0% { transform: translateY(100vh); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
 </style>
 </head>
 
 <body>
 
 <div class="card">
-    <h1>I'm Really Sorry 🥺</h1>
+    <h1>I'm Sorry Manshii Jii 🥺</h1>
     <p>Please tell me your mood...</p>
 
     <div class="moods">
-        <button onclick="setMood('angry')">😡 Angry</button>
-        <button onclick="setMood('sad')">😔 Sad</button>
-        <button onclick="setMood('okay')">😐 Okay</button>
-        <button onclick="setMood('miss')">🥺 Miss me?</button>
+        <button onclick="setMood('angry', this)">😡 Angry</button>
+        <button onclick="setMood('sad', this)">😔 Sad</button>
+        <button onclick="setMood('okay', this)">😐 Okay</button>
+        <button onclick="setMood('Pitai', this)">🥺 Mujhe kootne ka man?</button>
     </div>
 
-    <button class="sorry-btn" onclick="saySorry()">Click for Apology 💙</button>
+    <button class="sorry-btn" id="sorryBtn" onclick="saySorry()" disabled>
+        Maaf krdo plsss 💙
+    </button>
 
     <div class="result" id="result"></div>
+
+    <button class="accept-btn" id="acceptBtn" onclick="acceptApology()">
+        Thankss you here's your ice cream 💝
+    </button>
 </div>
 
 <script>
 let mood = "";
+const sorryBtn = document.getElementById("sorryBtn");
 
-function setMood(selectedMood) {
+// mood select
+function setMood(selectedMood, el) {
     mood = selectedMood;
-    document.getElementById("result").innerHTML = "You feel: " + selectedMood;
+
+    document.querySelectorAll(".moods button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+    el.classList.add("active");
+
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = "You feel: " + selectedMood;
+    resultDiv.style.opacity = 1;
+
+    sorryBtn.disabled = false;
+
+    // hide accept again
+    document.getElementById("acceptBtn").style.display = "none";
 }
 
+// apology logic
 function saySorry() {
     let message = "";
 
     if (mood === "angry") {
-        message = "I know you're angry... and honestly, I deserve it. But I'm really sorry 🥺💙";
+        message = "I know you're angry... but I'm really sorry 🥺💙";
+        showEmoji("💙");
     } 
     else if (mood === "sad") {
-        message = "Seeing you sad hurts me the most... please forgive me 💔";
+        message = "Seeing you sad hurts me the most 💔";
+        showEmoji("💔");
     } 
     else if (mood === "okay") {
-        message = "I'm glad you're a bit okay... can I make it better? 🥺";
+        message = "Can I make it better? 🥺";
+        showEmoji("😊");
     } 
-    else if (mood === "miss") {
-        message = "I miss you more... and I'm really really sorry ❤️";
-    } 
-    else {
-        message = "At least pick a mood na 🥺";
+    else if (mood === "Pitai") {
+        message = "Thik koot do 😅 but ice cream bhi milegi 🍦";
+        showEmoji("🍦");
     }
 
-    document.getElementById("result").innerHTML = message;
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = message;
+    resultDiv.style.opacity = 1;
+
+    document.getElementById("acceptBtn").style.display = "inline-block";
+
+    playClick();
+}
+
+// emoji
+function showEmoji(symbol) {
+    const emoji = document.createElement("div");
+    emoji.className = "emoji";
+    emoji.innerHTML = symbol;
+
+    emoji.style.left = Math.random() * window.innerWidth + "px";
+    emoji.style.top = window.innerHeight - 50 + "px";
+
+    document.body.appendChild(emoji);
+
+    setTimeout(() => emoji.remove(), 2000);
+}
+
+// floating hearts
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.fontSize = (15 + Math.random() * 20) + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 6000);
+}
+setInterval(createHeart, 800);
+
+// sounds
+function playClick() {
+    new Audio("https://www.soundjay.com/buttons/sounds/button-16.mp3").play();
+}
+
+function playCelebrate() {
+    new Audio("https://www.soundjay.com/human/sounds/applause-8.mp3").play();
+}
+
+// confetti
+function launchConfetti() {
+    for (let i = 0; i < 50; i++) {
+        const conf = document.createElement("div");
+        conf.className = "emoji";
+        conf.innerHTML = ["🎉","✨","💖","🥳"][Math.floor(Math.random()*4)];
+
+        conf.style.left = Math.random() * window.innerWidth + "px";
+        conf.style.top = window.innerHeight + "px";
+
+        document.body.appendChild(conf);
+
+        setTimeout(() => conf.remove(), 2000);
+    }
+}
+
+// accept
+function acceptApology() {
+    playCelebrate();
+    launchConfetti();
+
+    setTimeout(() => {
+        window.location.href = "voucher.html";
+    }, 2000);
 }
 </script>
 
